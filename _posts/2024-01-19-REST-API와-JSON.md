@@ -1,5 +1,5 @@
 ---
-title: "📄What is RESTful API?"
+title: "🤍 What is RESTful API?"
 date: 2024-01-19
 categories: [Spring, Spring Boot]
 render_with_liquid: false
@@ -96,7 +96,7 @@ GET /members/delete/1
 
 위와 같은 방식은 REST를 제대로 적용하지 않은 URI다. URI는 자원을 표현하는데 중점을 두어야 하기 때문에 `delete`와 같은 행위에 대한 표현이 들어가선 안된다.
 
-💡 자원에 대한 행위는 **HTTP Method(GET, POST, PUT, DELETE)**로 표현한다.
+💡 자원에 대한 행위는 **HTTP Method(GET, POST, PUT, DELETE)로 표현**한다.
 
 ```
 DELETE /members/1

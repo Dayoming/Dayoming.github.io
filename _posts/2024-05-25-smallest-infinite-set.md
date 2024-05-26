@@ -1,7 +1,7 @@
 ---
 title: "[99클럽 코테 스터디 3일차 TIL] Leetcode - Smallest Number In Infinite Set"
 date: 2024-05-25
-categories: [Java]
+categories: [TIL]
 render_with_liquid: false
 tags:
     [

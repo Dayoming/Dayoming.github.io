@@ -1,5 +1,5 @@
 ---
-title: "[99클럽 코테 스터디 8일차 TIL] DFS를 사용해 타겟 넘버 문제 풀이"
+title: "[99클럽 코테 스터디 8일차 TIL] DFS와 DP를 사용해 타겟 넘버 문제 풀이"
 date: 2024-05-30
 categories: [TIL]
 render_with_liquid: false
@@ -8,6 +8,7 @@ tags:
         Java,
         프로그래머스,
         DFS,
+        DP,
         알고리즘,
         99클럽,
         코딩테스트 준비,

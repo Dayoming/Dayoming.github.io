@@ -1,7 +1,7 @@
 ---
 title: "[LearnTogether✨] 프로젝트 환경설정 및 템플릿 적용"
 date: 2024-06-06
-categories: [Project, Spring]
+categories: [Spring, Project]
 render_with_liquid: false
 tags:
     [

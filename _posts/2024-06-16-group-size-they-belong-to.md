@@ -96,6 +96,6 @@ class Solution {
 }
 ```
 
-## 더 공부하면 좋을 내용
+## 더 공부해보고 싶은 내용
 - Stream 문법
 - HashSet 구현

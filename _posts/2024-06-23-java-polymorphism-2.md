@@ -1,0 +1,258 @@
+---
+title: "[JAVA] 다형성에 대해 알아보자 - 추상 클래스와 인터페이스☕"
+date: 2024-06-23
+categories: [Java]
+render_with_liquid: false
+tags:
+    [
+        Java
+    ]
+---
+
+![자바 다형성 썸네일](/assets/img/posts/2024-06-12-thumnail.png)
+
+지난 포스팅에 다형성의 주요 개념 2가지인 **다형적 참조와 메서드 오버라이딩**에 대해 정리했다. 이번에는 객체지향 프로그래밍에서 다형성이 어떻게 사용되는지 살펴보고, 다형성의 필요성에 대해 알아보면서 추상 클래스와 인터페이스까지 정리 해보려고 한다.
+
+해당 포스팅은 [김영한의 실전 자바 기본편](https://www.inflearn.com/course/%EA%B9%80%EC%98%81%ED%95%9C%EC%9D%98-%EC%8B%A4%EC%A0%84-%EC%9E%90%EB%B0%94-%EA%B8%B0%EB%B3%B8%ED%8E%B8/dashboard)을 보고 작성되었다.
+
+# 다형성의 활용
+
+Dog과 Cat 클래스가 있다고 하자.
+
+각각의 클래스는 다음과 같이 울음소리를 출력하는 `sound()` 메서드를 가지고 있다.
+
+```java
+public class Cat {
+    public void sound() {
+        System.out.println("냐옹");
+    }
+}
+
+public class Dog {
+    public void sound() {
+        System.out.prinln("멍멍");
+    }
+}
+```
+
+각 동물의 울음소리를 출력하기 위해 우리는 다음과 같이 Main을 작성할 수 있다.
+
+```java
+public static void main(String[] args) {
+        Dog dog = new Dog();
+        Cat cat = new Cat();
+
+        System.out.println("동물 소리 테스트 시작");
+        dog.sound();
+        System.out.println("동물 소리 테스트 종료");
+
+        System.out.println("동물 소리 테스트 시작");
+        cat.sound();
+        System.out.println("동물 소리 테스트 종료");
+}
+```
+
+그런데 여기에 여러 마리의 동물을 추가해야 한다고 생각해보자.
+
+```java
+public static void main(String[] args) {
+        Dog dog = new Dog();
+        Cat cat = new Cat();
+        Cow cow = new Cow();
+        Duck duck = new Duck();
+        Frog frog = new Frog();
+
+        System.out.println("동물 소리 테스트 시작");
+        dog.sound();
+        System.out.println("동물 소리 테스트 종료");
+
+        System.out.println("동물 소리 테스트 시작");
+        cat.sound();
+        System.out.println("동물 소리 테스트 종료");
+
+        System.out.println("동물 소리 테스트 시작");
+        cow.sound();
+        System.out.println("동물 소리 테스트 종료");
+
+        ...
+}
+```
+
+새 클래스가 추가 될 때마다 우리는 이 Main 함수로 돌아와 울음소리를 출력해주는 코드를 반복해서 작성해주어야 할 것이다.
+
+코드의 중복과 반복이 늘어나는 것은 썩 좋은 일이 아니다. 이럴 때 가장 처음으로 생각할 수 있는 일은 **중복되는 부분을 메서드로 빼보는 일**이다. 한 번 시도해보자.
+
+```java
+private static void soundCow(Cow cow) {
+    System.out.println("동물 소리 테스트 시작");
+    cow.sound();
+    System.out.println("동물 소리 테스트 종료");
+}
+```
+
+이제 `soundCow()`만 호출해도 울음소리를 출력할 수 있게 되었지만, `soundCow()`는 매개변수의 클래스가 `Cow` 클래스로 제한되어 있다. 즉, 위와 같은 방법으로 울음소리를 출력하려면 `Cat, Dog, Cow, Duck ...` 클래스들을 매개변수로 받는 메서드를 또 각각 만들어주어야 한다는 뜻이다.
+
+그럼 어떻게 해결할 수 있을까? 🤔
+
+이 때 바로 Java의 **다형성을 사용**하면 편리하게 새로운 동물의 울음소리를 출력할 수 있게 된다.
+
+지난 포스팅에서 정리했던 다형성의 2가지 중요한 개념을 다시 되짚어 보자.
+다형적 참조는 **부모는 자식의 인스턴스를 참조할 수 있다는 특징**이고, 메서드 오버라이딩은 **나중에 정의된 것이 가장 최우선으로 적용된다**는 것이다.
+
+`Animal`이라는 상위 클래스를 만들고, 아까 구현했던 `Cat, Dog, Cow` 등의 클래스가 `Animal`을 상속받도록 한 뒤 `sound()` 메서드를 오버라이딩 받아 구현한다.
+
+```java
+public class Animal {
+    public void sound() {
+        System.out.println("동물 울음 소리");
+    }
+}
+
+public class Cat extends Animal {
+    @Override
+    public void sound() {
+        System.out.println("냐옹");
+    }
+}
+
+public class Cow extends Animal {
+    @Override
+    public void sound() {
+        System.out.println("음메");
+    }
+}
+
+public class Dog extends Animal {
+    @Override
+    public void sound() {
+        System.out.println("멍멍");
+    }
+}
+```
+
+`sound()` 메서드는 하위 클래스에서 오버라이딩 되었기 때문에 호출했을 때 부모 클래스 `Animal`에서 정의된 "동물 울음 소리"를 출력하는 코드가 아니라 `Cat, Cow, Dog` 클래스에서 작성한 "냐옹, 음메, 멍멍" 을 출력하는 코드가 적용된다.
+
+```java
+public static void main(String[] args) {
+        Dog dog = new Dog();
+        Cat cat = new Cat();
+        Cow cow = new Cow();
+
+        soundAnimal(dog);
+        soundAnimal(cat);
+        soundAnimal(cow);
+    }
+
+    // 동물이 추가 되어도 변하지 않는 코드
+    private static void soundAnimal(Animal animal) {
+        System.out.println("동물 소리 테스트 시작");
+        animal.sound();
+        System.out.println("동물 소리 테스트 종료");
+    }
+```
+
+아까 만들었던 `soundCow()` 메서드는 매개변수로 `Cow` 클래스만 참조할 수 있었다. 그런데 다형적 참조 개념을 이용해 매개변수로 `Animal`을 받도록 하면, `Animal`을 상속받는 모든 자식 클래스들을 참조할 수 있게 된다.
+
+이제 새로운 동물 클래스를 만들 때 `Animal` 클래스를 상속받기만 하면 다른 코드를 수정할 필요가 없다. 해당 클래스만 생성해주고, `soundAnimal(해당 동물 클래스)`만 호출해주면 된다.
+
+다형성을 이용해 타입을 통일하고, 각각의 기능은 메서드 오버라이딩을 이용해 구현할수 있게 되었다!
+
+## 문제점
+
+그런데 문제점이 두 가지 있다.
+
+### 1. `Animal` 클래스를 생성할 수 있다.
+- `Animal` 클래스는 클래스 자체만으로는 특별한 기능을 하지 않는 추상적인 개념이다. 따라서 `Animal` 클래스만을 생성해서 사용할 일은 없으므로 제한이 필요하다.
+### 2. `Animal` 클래스를 상속받는 곳에서 `sound()` 메서드를 오버라이딩 하지 않을 수 있다.
+- `Animal` 클래스를 상속받는 자식 클래스에서 `sound()` 메서드를 오버라이딩 하지 않으면 자동으로 `Animal` 클래스의 `sound()` 메서드가 호출된다. 따라서 원하는 대로 프로그램이 작동하지 않을 수 있다. 이런 실수를 미연에 방지할 수 있어야 한다.
+
+이 문제점들을 추상 클래스와 인터페이스를 통해 해결해 보자.
+
+# 추상 클래스
+> 💡 부모 클래스는 제공하지만, 실제 생성되면 안되는 추상적인 개념 클래스. 실체인 인스턴스가 존재하지 않고 상속을 목적으로 사용된다. 추상 메서드가 하나라도 있는 클래스는 추상 클래스로 선언해야 한다.
+
+추상 클래스를 상속받으면 메서드 생성을 강제시킬 수 있다. 즉, 아까 느꼈던 문제점 중 '`Animal` 클래스를 상속받는 곳에서 `sound()` 메서드를 오버라이딩 하지 않을 수 있다`는 점을 해결할 수 있다.
+
+```java
+// 다형성을 위한 부모 타입으로써 껍데기 역할만 제공
+// 순수 추상 클래스는 실행 로직 X
+public abstract class AbstractAnimal {
+
+    // 자식 클래스에서 반드시 구현해야 하는 메서드
+    // 구현하지 않으면 컴파일 오류 발생
+    public abstract void sound();
+    public abstract void move();
+}
+```
+
+`public abstract`로 선언된 메서드는 하위 클래스에서 오버라이딩 해 구현되지 않으면 다음과 같은 컴파일 오류를 발생시킨다.
+
+```
+java: poly.ex4.Dog is not abstract and does not override abstract method move() in poly.ex4.AbstractAnimal
+```
+
+또, 추상 클래스를 생성할 경우에도 컴파일 오류를 발생시킨다.
+
+![추상 클래스 생성 시 컴파일 오류](/assets/img/posts/2024-06-23-1.png)
+
+이렇게 다형성을 위한 부모 타입을 **추상 클래스** 라고 하고, 추상 메서드로만 구성되어 있는 추상 클래스를 **순수 추상 클래스**라고 한다.
+
+결국 추상 클래스는 어떤 규격, 규칙과 같다. 1편에서 다형성의 예시를 들며 붕어빵 이야기를 했다. 여러분이 붕어빵 회사 본사고, 붕어빵 회사 체인점을 낸다고 하자. 여러분은 붕어빵을 만드는 방법을 체인점에게 알려주어야 한다. 이 때 나눠줄 설명서를 추상 클래스로 한 번 만들어보겠다.
+
+
+```java
+public abstract class FishBread {
+    // 반죽 만들기
+    public abstract void makingDough() {
+        계란, 설탕, 우유, 밀가루, 소금, 베이킹 파우더를 넣고 잘 섞는다.
+        채반에 한 번 걸러준다.
+        고운 반죽을 볼에 담는다.
+    };
+    // 반죽 붓기
+    public abstract void pouringDough() {
+        틀에 기름을 발라준다.
+        반죽을 붓는다.
+    };
+    // 재료 넣기
+    public abstract void addIngredients(Ingredient ingredient) {
+        준비된 재료를 넣어준다.
+    };
+    // 굽기
+    public abstract void roast() {
+        에어프라이기나 오븐에 굽는다.
+    };
+}
+```
+
+팥 붕어빵, 슈크림 붕어빵, 피자 붕어빵, 초콜릿 붕어빵도 모두 위와 같은 과정을 반드시 거쳐야만 만들 수 있다. 위 과정을 그대로 사용할 수도 있지만 오버라이딩을 통해 체인점 사장이 입맛대로 레시피를 조정할 수 있다.
+
+이렇게 뭔가를 만드는 규격을 설정해주는 것이 추상 클래스다.
+
+추상 클래스를 이용해서 문제점을 해결 할 수 있었지만, 클래스 상속은 한 개만 가능하다. 만약 구현하고 싶은 기능이 엄청나게 많고 기능들에 통일성이 없다면 코드가 지저분해지고 말 것이다. 이런 문제를 해결하기 위해 자바에는 순수 추상 클래스 대신 **인터페이스**라는 개념을 사용한다.
+
+# 인터페이스
+> 💡 순수 추상 클래스와 본질적으로는 같지만 편의 기능을 조금 더 제공하는 클래스. 추상 메서드로만 이루어져 있도록 제약을 두고, 다중 구현이 가능하도록 한다.
+
+## ❔ 순수 추상 클래스를 만들어도 되는데, 왜 인터페이스를 사용해야 할까?
+
+### 실행 가능한 메서드를 구현하지 못하게 제약
+- 인터페이스를 만드는 이유는 인터페이스를 구현하는 곳에서 인터페이스의 메서드를 반드시 구현하라는 제약을 주는 것이다. 그런데 순수 추상 클래스의 경우 미래에 누군가 그곳에 실행 가능한 메서드를 끼워 넣을 수 있다. 그런 경우 추가된 기능을 자식 클래스에서 구현하지 않을 수도 있고, 또 더는 순수 추상 클래스가 나이게 된다. 인터페이스는 모든 메서드가 추상 메서드이므로 이런 문제를 차단할 수 있다.
+
+### 다중 구현 가능
+- 자바에서 클래스 상속은 부모를 하나만 지정할 수 있다. 반면 인터페이스는 부모를 여러명 두는 다중 구현(다중 상속)이 가능하다.
+
+## 인터페이스의 다중 구현
+
+### ❔ 클래스의 다중 상속은 불가능한데, 왜 인터페이스의 다중 구현은 가능할까?
+
+#### 클래스의 다중 상속은 다이아몬드 문제 발생
+
+만약 상속이 여러 개 가능하다고 가정해보자. 부모 클래스에 이름이 같은 메서드가 존재한다면, 그 중 어느 메서드를 우선으로 선택해야 할까? 정답은 **알 수 없음**이다.
+
+이런 문제를 `다이아몬드 문제`라고 한다. 또 다중 상속을 허용하게 되면 클래스 계층 구조가 매우 복잡해질 수 있다. 따라서 클래스의 다중 상속은 허용되지 않는다.
+
+#### 인터페이스는 모두 추상 메서드로 이루어져 있음 - 다이아몬드 문제 발생X
+
+그럼 인터페이스는 왜 다중 구현이 가능할까?
+
+인터페이스는 모두 추상 메서드로 이루어져 있다. 따라서 메서드 자신은 구현을 가지지 않고 대신 인터페이스를 구현하는 클래스에서 해당 기능을 모두 구현한다. 그리고 오버라이딩에 의해 컴파일러가 부모 클래스의 메서드와 고민할 필요 없이 오버라이딩 된 자식 클래스의 메서드를 호출한다. 따라서 다이아몬드 문제가 발생하지 않으므로 다중 구현이 허용된다.

@@ -3,7 +3,7 @@ title: "[OOP] 객체지향 5대 원칙(SOLID) - 개방 폐쇄 원칙(Open-Closed
 date: 2024-06-25
 categories: [Java]
 render_with_liquid: false
-tags
+tags:
     [
         Java,
         OOP

@@ -1,7 +1,12 @@
 /*
   The common styles
 */
-@import url('http://fonts.googleapis.com/earlyaccess/nanumgothic.css');
+@font-face {
+  font-family: "Nanum Gothic", sans-serif;
+  src: url(NanumGothic.ttf);
+  font-weight: 400;
+  font-style: normal;
+}
 
 html {
   @media (prefers-color-scheme: light) {

@@ -83,13 +83,18 @@ layout: compress
     {% endif %}
 
     {% include_cached search-loader.html %}
-    <audio id="click-sound" src="/click_sound.mp3" preload="auto"></audio>
+    <audio id="click-sound" src="/click_sound.mp3?v=1" preload="auto"></audio>
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         var clickSound = document.getElementById('click-sound');
         document.querySelectorAll('a').forEach(function(link) {
-          link.addEventListener('click', function() {
-            clickSound.play();
+          link.addEventListener('click', function(event) {
+            // 소리를 끊기지 않게 하기 위해 재생하기 전에 시간을 0으로 설정
+            clickSound.currentTime = 0;
+            clickSound.play().catch(function(error) {
+              // 재생이 실패했을 때 오류를 처리 (브라우저 정책 등)
+              console.error('오디오 재생 실패:', error);
+            });
           });
         });
       });

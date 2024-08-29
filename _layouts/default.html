@@ -92,6 +92,12 @@ layout: compress
             clickSound.play();
           });
         });
+
+        document.querySelectorAll('button').forEach(function(link) {
+          link.addEventListener('click', function() {
+            clickSound.play();
+          });
+        });
       });
     </script>
   </body>
